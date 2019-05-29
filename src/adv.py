@@ -69,10 +69,12 @@ while True:
     # Prints the current description (the textwrap module might be useful here).
     print(player.current_room.description)
 
-    # create string from items 
-    itemStr = player.current_room.items
+    # Prints the items in the room
+    items = player.current_room.items
+    print('Items: ')
+    for i in items:
+        print(f"{i.name} - '{i.description}'")
 
-    print(f"Visible items: {itemStr}")
     try:
         # Waits for user input and decides what to do.
         cmd = input("\nEnter a command: ").lower().split()
