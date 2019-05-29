@@ -1,11 +1,12 @@
 from room import Room
 from player import Player
+from item import Item
 
 # Declare all the rooms
 
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons"),
+"North of you, the cave mount beckons"),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
 passages run north and east."""),
@@ -22,10 +23,20 @@ chamber! Sadly, it has already been completely emptied by
 earlier adventurers. The only exit is to the south."""),
 }
 
+# Declare all the items
+
+items = {
+    "sword": Item("Sword", "The mighty sword"),
+    "helmet": Item("Helmet", "The magical helmet"),
+    "armour": Item("Armour", "The protective armour"),
+    "gem": Item("Gem", "The wizard gem"),
+    "scroll": Item("Scroll", "The super scroll"),
+    "treasure": Item("Treasure", "The pot of gold")
+}
 
 # Link rooms together
 
-room['outside'].n_to = room['foyer'] # when accessing key/value pairs on a dictionary, you use bracket not, dot not when accessing something on a class
+room['outside'].n_to = room['foyer'] 
 room['foyer'].s_to = room['outside']
 room['foyer'].n_to = room['overlook']
 room['foyer'].e_to = room['narrow']
@@ -33,6 +44,14 @@ room['overlook'].s_to = room['foyer']
 room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
+
+# Link items to rooms
+
+room['outside'].items = [items['sword']]
+room['foyer'].items = [items['helmet']]
+room['narrow'].items = [items['armour']]
+room['overlook'].items = [items['gem']]
+room['treasure'].items = [items['scroll'], items['treasure']]
 
 #
 # Main
@@ -50,27 +69,61 @@ while True:
     # Prints the current description (the textwrap module might be useful here).
     print(player.current_room.description)
 
+    # create string from items 
+    itemStr = player.current_room.items
+
+    print(f"Visible items: {itemStr}")
     try:
         # Waits for user input and decides what to do.
-        cmd = input("\nEnter direction: ").lower()[0]
+        cmd = input("\nEnter a command: ").lower().split()
+
+        if len(cmd) == 1:
+            # user entered a verb e.g "n"
+            # quit game
+            if cmd[0][0] == "q":
+                print("Game ended")
+                break
+
+            # check the input direction is valid
+            attribute = f'{cmd[0][0]}_to'
+            if hasattr(player.current_room, attribute):
+                # set the new room
+                player.current_room =  getattr(player.current_room, attribute)
+            else:
+                print("Wrong way! Try again, hint: enter n, s, e, w")
+                continue
+        elif len(cmd) == 2:
+            # user entered a verb and object e.g "drop sword"
+            print(2)
+            if cmd[0] == "get":
+                # check if available
+                for i in player.current_room.items:
+                    if cmd[1] == i:
+                        player.items.append(i)
+                        print(f'{player} has picked up {i}')
+                    else:
+                        print("Item not in this room, try another")
+          
+                #if true, add
+
+                #else msg: that item isnt available in this room, continue
+                print('get', cmd[1])
+            elif cmd[0] == "drop":
+                # check if have that one, if no check it actually exist, related msgs
+                print('drop', cmd[1])
+
+            elif cmd[0] == "take":
+                print("took", cmd[1])
+            else:
+                print("Invalid command. Please try again")
+        else: 
+            print("Invalid command. Please try again")
     except:
         # if nothing entered
         print("Something must be entered!")
         continue
 
-    # quit game
-    if cmd == "q":
-        print("Game ended")
-        break
 
-    # check the input direction is valid
-    attribute = f'{cmd}_to'
-    if hasattr(player.current_room, attribute):
-        # set the new room
-        player.current_room =  getattr(player.current_room, attribute)
-    else:
-        print("Wrong way! Try again, hint: enter n, s, e, w")
-        continue
 
     #
     # If the user enters a cardinal direction, attempt to move to the room there.
