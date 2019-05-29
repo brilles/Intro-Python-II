@@ -1,4 +1,5 @@
 from room import Room
+from player import Player
 
 # Declare all the rooms
 
@@ -24,7 +25,7 @@ earlier adventurers. The only exit is to the south."""),
 
 # Link rooms together
 
-room['outside'].n_to = room['foyer']
+room['outside'].n_to = room['foyer'] # when accessing key/value pairs on a dictionary, you use bracket not, dot not when accessing something on a class
 room['foyer'].s_to = room['outside']
 room['foyer'].n_to = room['overlook']
 room['foyer'].e_to = room['narrow']
@@ -38,14 +39,39 @@ room['treasure'].s_to = room['narrow']
 #
 
 # Make a new player object that is currently in the 'outside' room.
+player = Player(room['outside'])
 
-# Write a loop that:
-#
-# * Prints the current room name
-# * Prints the current description (the textwrap module might be useful here).
-# * Waits for user input and decides what to do.
-#
-# If the user enters a cardinal direction, attempt to move to the room there.
-# Print an error message if the movement isn't allowed.
-#
-# If the user enters "q", quit the game.
+while True: 
+    # Prints the current room name
+    print(player.current_room.name)
+
+    # Prints the current description (the textwrap module might be useful here).
+    print(player.current_room.description)
+
+    try:
+        # Waits for user input and decides what to do.
+        direction = input("\nEnter direction: ").lower()[0]
+    except:
+        # if nothing entered
+        print("Something must be entered!")
+        continue
+
+    # quit game
+    if direction == "q":
+        print("Game ended")
+        break
+
+    # check the input direction is valid
+    attribute = f'{direction}_to'
+    if hasattr(player.current_room, attribute):
+        # set the new room
+        player.current_room =  getattr(player.current_room, attribute)
+    else:
+        print("Wrong way! Try again, hint: enter n, s, e, w")
+        continue
+
+    #
+    # If the user enters a cardinal direction, attempt to move to the room there.
+    # Print an error message if the movement isn't allowed.
+    #
+    # If the user enters "q", quit the game.
