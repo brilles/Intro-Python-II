@@ -42,6 +42,7 @@ room['treasure'].s_to = room['narrow']
 player = Player("Player1", room['outside'])
 
 while True: 
+    # Prints the player's name
     print(player.name)
     # Prints the current room name
     print(player.current_room.name)
@@ -51,19 +52,19 @@ while True:
 
     try:
         # Waits for user input and decides what to do.
-        direction = input("\nEnter direction: ").lower()[0]
+        cmd = input("\nEnter direction: ").lower()[0]
     except:
         # if nothing entered
         print("Something must be entered!")
         continue
 
     # quit game
-    if direction == "q":
+    if cmd == "q":
         print("Game ended")
         break
 
     # check the input direction is valid
-    attribute = f'{direction}_to'
+    attribute = f'{cmd}_to'
     if hasattr(player.current_room, attribute):
         # set the new room
         player.current_room =  getattr(player.current_room, attribute)
