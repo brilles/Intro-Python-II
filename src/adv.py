@@ -3,7 +3,6 @@ from player import Player
 from item import Item
 
 # Declare all the rooms
-
 room = {
     'outside':  Room("Outside Cave Entrance",
 "North of you, the cave mount beckons"),
@@ -24,7 +23,6 @@ earlier adventurers. The only exit is to the south."""),
 }
 
 # Declare all the items
-
 items = {
     "sword": Item("Sword", "The mighty sword"),
     "helmet": Item("Helmet", "The magical helmet"),
@@ -35,7 +33,6 @@ items = {
 }
 
 # Link rooms together
-
 room['outside'].n_to = room['foyer'] 
 room['foyer'].s_to = room['outside']
 room['foyer'].n_to = room['overlook']
@@ -46,7 +43,6 @@ room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
 # Link items to rooms
-
 room['outside'].items = [items['sword']]
 room['foyer'].items = [items['helmet']]
 room['narrow'].items = [items['armour']]
@@ -69,23 +65,25 @@ while True:
     # Prints the current description (the textwrap module might be useful here).
     print(player.current_room.description)
 
-    # Prints the items in the room
-    items = player.current_room.items
-    print('Items: ')
-    for i in items:
-        print(f"{i.name} - '{i.description}'")
+    # checking for items
+    try: 
+        player.current_room.items[0]
+                # Prints the items in the room
+        print('Items: ')
+        for i in player.current_room.items:
+            print(f"{i.name} - '{i.description}'")
+    except:
+        print("No items here, look elsewhere")
 
     try:
         # Waits for user input and decides what to do.
         cmd = input("\nEnter a command: ").lower().split()
 
         if len(cmd) == 1:
-            # user entered a verb e.g "n"
             # quit game
             if cmd[0][0] == "q":
                 print("Game ended")
                 break
-
             # check the input direction is valid
             attribute = f'{cmd[0][0]}_to'
             if hasattr(player.current_room, attribute):
@@ -96,20 +94,15 @@ while True:
                 continue
         elif len(cmd) == 2:
             # user entered a verb and object e.g "drop sword"
-            print(2)
             if cmd[0] == "get":
                 # check if available
                 for i in player.current_room.items:
-                    if cmd[1] == i:
+                    if cmd[1] == i.name.lower():
+                        player.current_room.items.remove(i)
                         player.items.append(i)
-                        print(f'{player} has picked up {i}')
+                        print(f'You have picked up the {i.name}')
                     else:
                         print("Item not in this room, try another")
-          
-                #if true, add
-
-                #else msg: that item isnt available in this room, continue
-                print('get', cmd[1])
             elif cmd[0] == "drop":
                 # check if have that one, if no check it actually exist, related msgs
                 print('drop', cmd[1])
