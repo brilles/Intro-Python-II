@@ -57,42 +57,27 @@ room['treasure'].items = [items['scroll'], items['treasure']]
 player = Player("Player1", room['outside'])
 
 while True: 
-    # Prints the player's name
-    print(player.name)
-    # Prints the current room name
-    print(player.current_room.name)
-
-    # Prints the current description (the textwrap module might be useful here).
-    print(player.current_room.description)
-
-    # checking for items
-    try: 
-        player.current_room.items[0]
-                # Prints the items in the room
-        print('Items: ')
-        for i in player.current_room.items:
-            print(f"{i.name} - '{i.description}'")
-    except:
-        print("No items here, look elsewhere")
+    
+    player.details()
+    player.check_items()
 
     try:
-        # Waits for user input and decides what to do.
+        # Gets user input, normalizes it, creates list so we can parse 
         cmd = input("\nEnter a command: ").lower().split()
 
+        # CASE: user entered 1 word (direction)
         if len(cmd) == 1:
-            # quit game
+
+            # starts with q, quit game (break out of REPL)
             if cmd[0][0] == "q":
                 print("Game ended")
                 break
-            #show inventory
+
+            # starts with i, show inventory
             if cmd[0][0] == "i":
-                if len(player.items) == 0:
-                    print("You don't have any items!")
-                else:
-                    print('Your items: ')
-                for i in player.items:
-                    print(f"{i.name} - '{i.description}'")
-            # check the input direction is valid
+                player.show_inventory()
+                
+            # checks if the direction is a possible "move". Delegates correct move
             attribute = f'{cmd[0][0]}_to'
             if hasattr(player.current_room, attribute):
                 # set the new room
@@ -100,6 +85,8 @@ while True:
             else:
                 print("Wrong way! Try again, hint: enter n, s, e, w")
                 continue
+
+        # CASE: user entered 2 words (some action followed by an item)
         elif len(cmd) == 2:
             # user entered a verb and object e.g "drop sword"
             if cmd[0] == "get" or cmd[0] == "take":
@@ -129,13 +116,5 @@ while True:
             print("Invalid command. Please try again")
     except:
         # if nothing entered
-        print("Something must be entered!")
+        print("I don't understand that command. Please try again")
         continue
-
-
-
-    #
-    # If the user enters a cardinal direction, attempt to move to the room there.
-    # Print an error message if the movement isn't allowed.
-    #
-    # If the user enters "q", quit the game.

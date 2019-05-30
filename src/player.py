@@ -9,3 +9,24 @@ class Player:
 
     def __repr__(self):
         return f"Player{self.name, self.current_room}"
+
+    def details(self):
+        print(f"{self.name}, you are at the {self.current_room.name}, {self.current_room.description}")
+    
+    def check_items(self):
+        try: 
+            self.current_room.items[0]
+            print('Items here: ')
+            for i in self.current_room.items:
+                print(f"{i.name} - '{i.description}'")
+        except:
+            print("No items here, look elsewhere")
+    
+    def show_inventory(self):
+        if len(self.items) == 0:
+            print("You don't have any items!")
+        else:
+            print('Your items: ')
+            for i in self.items:
+                print(f"{i.name} - '{i.description}'")
+
