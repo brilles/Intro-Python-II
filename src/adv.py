@@ -94,21 +94,27 @@ while True:
                 continue
         elif len(cmd) == 2:
             # user entered a verb and object e.g "drop sword"
-            if cmd[0] == "get":
+            if cmd[0] == "get" or cmd[0] == "take":
                 # check if available
                 for i in player.current_room.items:
                     if cmd[1] == i.name.lower():
                         player.current_room.items.remove(i)
                         player.items.append(i)
-                        print(f'You have picked up the {i.name}')
+                        print(i.on_take())
                     else:
                         print("Item not in this room, try another")
             elif cmd[0] == "drop":
                 # check if have that one, if no check it actually exist, related msgs
-                print('drop', cmd[1])
-
-            elif cmd[0] == "take":
-                print("took", cmd[1])
+                if len(player.items) == 0:
+                    print("You don't have any items to drop!")
+                else: 
+                    for i in player.items:
+                        if cmd[1] == i.name.lower():
+                            player.items.remove(i)
+                            player.current_room.items.append(i)
+                            print(i.on_drop())
+                        else:
+                            print("You dont have that item.")
             else:
                 print("Invalid command. Please try again")
         else: 
