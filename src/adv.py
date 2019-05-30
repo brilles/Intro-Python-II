@@ -84,6 +84,14 @@ while True:
             if cmd[0][0] == "q":
                 print("Game ended")
                 break
+            #show inventory
+            if cmd[0][0] == "i":
+                if len(player.items) == 0:
+                    print("You don't have any items!")
+                else:
+                    print('Your items: ')
+                for i in player.items:
+                    print(f"{i.name} - '{i.description}'")
             # check the input direction is valid
             attribute = f'{cmd[0][0]}_to'
             if hasattr(player.current_room, attribute):
